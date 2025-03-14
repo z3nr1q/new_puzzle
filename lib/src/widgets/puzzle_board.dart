@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/puzzle_provider.dart';
+import '../models/puzzle_piece.dart';
 import 'puzzle_piece_widget.dart';
 
 class PuzzleBoard extends StatelessWidget {
@@ -12,6 +13,12 @@ class PuzzleBoard extends StatelessWidget {
       builder: (context, puzzleProvider, child) {
         final gridSize = puzzleProvider.gridSize;
         final pieces = puzzleProvider.pieces;
+        
+        // Organizar as peças por posição atual
+        final orderedPieces = List<PuzzlePiece>.filled(pieces.length, pieces[0]);
+        for (var piece in pieces) {
+          orderedPieces[piece.currentPosition] = piece;
+        }
 
         return AspectRatio(
           aspectRatio: 1,
@@ -36,9 +43,9 @@ class PuzzleBoard extends StatelessWidget {
                 mainAxisSpacing: 4,
                 crossAxisSpacing: 4,
               ),
-              itemCount: pieces.length,
+              itemCount: orderedPieces.length,
               itemBuilder: (context, index) {
-                final piece = pieces[index];
+                final piece = orderedPieces[index];
                 return PuzzlePieceWidget(piece: piece);
               },
             ),
